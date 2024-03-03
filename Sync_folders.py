@@ -36,13 +36,10 @@ def compare_folders(source, replica):
     print(os.listdir(source))
     print(os.listdir(replica))
 
-    # if len(os.listdir(source))!= len(os.listdir(replica)):
-    #     return False
-
     for file_replica in os.listdir(replica):
         if file_replica not in os.listdir(source):
             # remove file_replica
-            print(f'2 - File {file_replica} not in source - removing it now. - ADD TO LOG') # file not in source,  remove from replica
+            print(f'2 - File {file_replica} not in source - removing it now.') # file not in source,  remove from replica
             os.remove(replica+'/'+file_replica)
             logging.info(f'File {file_replica} removed from replica.')
     
@@ -55,24 +52,19 @@ def compare_folders(source, replica):
 
         else: # if files with same name, compare hash 
             for file_replica in os.listdir(replica):
-                if compare_files(source+'/'+file, replica+'/'+file_replica):
-                    print('3 - True - same file. Operations not needed.')
-                else:
-                    print(f'4 - False - different contents between {file} and {file_replica}. Removing file from replica and copying now the new one. - ADD TO LOG')
-                    # remove file_replica
-                    os.remove(replica+'/'+file_replica)
-                    logging.info(f'File {file_replica} removed from replica.')
-                    # copy file to replica dir
-                    shutil.copy2(source+"/"+file, replica)
-                    logging.info(f'File {file} copied from source to replica.')
+                if file_replica == file:
+                    if compare_files(source+'/'+file, replica+'/'+file_replica):
+                        print('3 - True - same file. Operations not needed.')
+                    else:
+                        print(f'4 - False - different contents between {file} and {file_replica}. Removing file from replica and copying now the new one. - ADD TO LOG')
+                        # remove file_replica
+                        os.remove(replica+'/'+file_replica)
+                        logging.info(f'File {file_replica} removed from replica.')
+                        # copy file to replica dir
+                        shutil.copy2(source+"/"+file, replica)
+                        logging.info(f'File {file} copied from source to replica.')
 
-
-def sync_file(operation, file, source, replica):
-    if operation == "copy":
-        shutil.copy2(source+"/"+file, replica)
-
-    elif operation == "remove":
-        os.remove(replica+'/'+file)
+    logging.info('Synchronization finished.')
 
 
 # main loop with paths and interval as arguments 
