@@ -11,7 +11,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Folder Synchronization")
     parser.add_argument("source", help="Path to the source folder")
     parser.add_argument("replica", help="Path to the replica folder")
-    parser.add_argument("--interval", type=int, default=10, help="Synchronization interval in seconds (default: 1800)")
+    parser.add_argument("--interval", type=int, default=1800, help="Synchronization interval in seconds (default: 1800)")
     parser.add_argument("--log-file", default="sync_log.txt", help="Path to the log file (default: sync_log.txt)")
     return parser.parse_args()
 
@@ -19,14 +19,8 @@ def parse_arguments():
 # compare files with hash 
 
 def compare_files(source, replica): # compare hash of files (sha3 more secure)
-
-    # if source and replica are the same: return True
-    # if different: return False
-
     source_hash = hashlib.sha3_256(open(source, 'rb').read()).hexdigest()
     replica_hash = hashlib.sha3_256(open(replica, 'rb').read()).hexdigest()
-    # print(source_hash)
-    # print(replica_hash)
 
     return source_hash == replica_hash
 
@@ -64,7 +58,8 @@ def compare_folders(source, replica):
                         shutil.copy2(source+"/"+file, replica)
                         logging.info(f'File {file} copied from source to replica.')
 
-    logging.info('Synchronization finished.')
+    # if dir inside source instead of file, copy also dir with shutil.copytree
+    # para remover dir usar shutil.rmtree
 
 
 # main loop with paths and interval as arguments 
@@ -72,29 +67,14 @@ def compare_folders(source, replica):
 def synchronize_folders(source, replica, interval, log_file):
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', filename=log_file, encoding='utf-8', level=logging.DEBUG) # using logging library as is more scalable and standard
     logging.info(f'STARTING SYNCHRONIZATION with an interval of {interval} seconds.')
-    compare_folders(source, replica)
+    n = 0
     
-    # while True:
-        
-    #     # compare folders
-    #     if compare_folders(source, replica):
-    #         logging.info(f'Folders are identical -- SYNCHRONIZATION SUCCESSFUL.')
-    #     else:
-    #         logging.info(f'Differences found between folders. ')
-
-    #         # copy file X from source folder to replica folder
-    #         file = "test1.txt"
-    #         shutil.copy2(source+"/"+file, replica) # cope2 preserves metadata
-    #         # remove file x from replica if not existing in source folder
-    #         # if dir inside source instead of file, copy also dir with shutil.copytree
-    #         # para remover dir usar shutil.rmtree
-            
-        
-    #     # logging example
-    #     logging.info('teste intervalo')
-    #     # periodically synchronize folders
-    #     time.sleep(interval)
-
+    while True:
+        n += 1
+        compare_folders(source, replica)
+        logging.info(f'Synchronization {n} successful.')
+        # periodically synchronize folders
+        time.sleep(interval)
 
 
 if __name__ == "__main__":
