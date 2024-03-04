@@ -1,3 +1,6 @@
+"Program for synchronizing folders using recursive copy and remove operations."
+
+# Libraries used:
 import os
 import shutil
 import time
@@ -8,12 +11,20 @@ import argparse
 
 def parse_arguments():
     """
-    Command line arguments parser.
+    Parse command line arguments for the folder synchronization program.
+
+    source: Path to the source folder to be synchronized.
+    replica: Path to the replica folder where changes will be replicated.
+    --interval: Synchronization interval in seconds (default: 1800 seconds).
+    --log-file: Path to the log file (default: sync_log.txt).
 
     Returns
     -------
-    _type_
-        _description_
+    argparse.Namespace
+        An object containing the parsed command line arguments.
+
+    Example of usage:
+    >>> python sync_folders.py /path/to/source /path/to/replica --interval 3600 --log-file custom_log.txt
     """
     parser = argparse.ArgumentParser(description="Folder Synchronization")
     parser.add_argument("source", help="Path to the source folder")
@@ -68,75 +79,53 @@ def compare_folders(source: str, replica: str):
     replica : str
         Path of replica folder.
     """
-    # print(os.listdir(source))
-    # print(os.listdir(replica))
-
-    def comparing_files(file1_path: str, file2_path: str):
-        if file2_path == file1_path:
-            if compare_files(file1_path, file2_path):
-                print("3 - True - same file. Operations not needed.")
-                return True
-            else:
-                # remove file_replica
-                os.remove(file2_path)
-                logging.info("File %s removed from replica.", file2_path)
-                # copy file to replica dir
-                shutil.copy2(file1_path, file2_path) #### ERRO !
-                logging.info("File %s copied from source to replica.", file1_path)
-                return False
-
-    for file_replica in os.listdir(replica):
-        if file_replica not in os.listdir(source):
-            # remove file_replica
-            print(
-                "2 - File %s not in source - removing it now.", file_replica
-            )  # file not in source,  remove from replica
-            os.remove(replica + "/" + file_replica)
-            logging.info("File %s removed from replica.", file_replica)
-
     for file in os.listdir(source):
-        print(file, os.path.isdir(source+'/'+file))
-        # print(os.path.isfile(source+'/'+file))
-        if os.path.isdir(source+'/'+file): # if 'file' is a directory instead of file
-            if file not in os.listdir(replica):
-                # copy dir to replica
-                shutil.copytree(source + "/" + file, replica + "/" + file) #copy dir with all contents to replica
-                logging.info("DIR %s copied from source to replica.", file)
+        file_path = os.path.join(source, file)
+        file_replica_path = os.path.join(replica, file)
+        if os.path.isdir(file_path):  # if 'file' is a directory instead of file
+            subfolder = file
+            if subfolder not in os.listdir(replica):
+                shutil.copytree(
+                    file_path, file_replica_path
+                )  # copy dir with all contents to replica
+                logging.info("Subfolder %s copied from source to replica.", subfolder)
             else:
-                print('TESTE')
-                for dir_file in os.listdir(source+'/'+file):
-                    comparing_files(source + "/" + file+'/'+dir_file, replica + "/" + file + '/' + dir_file) ####################
-
+                compare_folders(
+                    file_path, os.path.join(replica, subfolder)
+                )  # recursive
 
         elif file not in os.listdir(replica):
-           # file not in replica, copy from source to replica
-            shutil.copy2(source + "/" + file, replica)  # copy2 preserves metadata
+            # file not in replica, copy from source to replica
+            shutil.copy2(file_path, replica)  # copy2 preserves metadata
             logging.info("File %s copied from source to replica.", file)
 
         else:  # if files with same name, compare hash
             for file_replica in os.listdir(replica):
                 if file_replica == file:
-                    if compare_files(source + "/" + file, replica + "/" + file_replica):
-                        # print("3 - True - same file. Operations not needed.")
-                        continue
+                    if compare_files(file_path, file_replica_path):
+                        pass
                     else:
                         # remove file_replica
-                        os.remove(replica + "/" + file_replica)
+                        os.remove(file_replica_path)
                         logging.info("File %s removed from replica.", file_replica)
                         # copy file to replica dir
-                        shutil.copy2(source + "/" + file, replica)
+                        shutil.copy2(file_path, replica)
                         logging.info("File %s copied from source to replica.", file)
 
-    # if dir inside source instead of file, copy also dir with shutil.copytree
-    # para remover dir usar shutil.rmtree
-
-
-# main loop with paths and interval as arguments
+    for file_replica in os.listdir(replica):
+        if file_replica not in os.listdir(source):
+            rep_path = os.path.join(replica, file_replica)
+            if os.path.isdir(rep_path):
+                shutil.rmtree(rep_path)
+                logging.info("Subfolder %s removed from replica.", file_replica)
+            os.remove(rep_path)
+            logging.info("File %s removed from replica.", file_replica)
 
 
 def synchronize_folders(source: str, replica: str, interval: int, log_file: str):
     """
-    Main loop of synchronization between source and replica folders, with a custom period of time and a log file defined.
+    Main loop of synchronization between source and replica folders (subfolders included), with a custom period of time and a log file defined.
+    It is executed in a loop until the program is terminated.
 
     Parameters
     ----------
@@ -163,8 +152,7 @@ def synchronize_folders(source: str, replica: str, interval: int, log_file: str)
         compare_folders(source, replica)
         logging.info("Synchronization %s successful.", n)
         # periodically synchronize folders
-        # time.sleep(interval)
-        break
+        time.sleep(interval)
 
 
 if __name__ == "__main__":

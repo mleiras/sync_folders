@@ -1,20 +1,21 @@
-2024-03-03 12:05:35,270 INFO: STARTING SYNCHRONIZATION with an interval of 10 seconds.
-2024-03-03 12:05:35,271 INFO: File test1 - Copy.txt removed from replica.
-2024-03-03 12:05:35,272 INFO: File test1.txt copied from source to replica.
-2024-03-03 12:05:35,273 INFO: Synchronization 1 successful.
-2024-03-03 12:05:45,280 INFO: Synchronization 2 successful.
-2024-03-03 12:05:55,282 INFO: Synchronization 3 successful.
-2024-03-03 12:06:05,284 INFO: Synchronization 4 successful.
-2024-03-03 12:06:15,288 INFO: File test2 - Copy.txt copied from source to replica.
-2024-03-03 12:06:15,288 INFO: Synchronization 5 successful.
-2024-03-03 12:06:25,292 INFO: Synchronization 6 successful.
-2024-03-03 12:06:35,294 INFO: File test2 - Copy.txt removed from replica.
-2024-03-03 12:06:35,296 INFO: File test3.txt copied from source to replica.
-2024-03-03 12:06:35,297 INFO: Synchronization 7 successful.
-2024-03-03 12:06:45,299 INFO: File test2.txt copied from source to replica.
-2024-03-03 12:06:45,300 INFO: Synchronization 8 successful.
-2024-03-03 12:06:55,305 INFO: File test3.txt removed from replica.
-2024-03-03 12:06:55,305 INFO: File test3.txt copied from source to replica.
-2024-03-03 12:06:55,305 INFO: Synchronization 9 successful.
-2024-03-03 12:07:05,309 INFO: Synchronization 10 successful.
-2024-03-03 12:07:15,312 INFO: Synchronization 11 successful.
+2024-03-04 16:03:54,524 INFO: STARTING SYNCHRONIZATION with an interval of 10 seconds.
+2024-03-04 16:03:54,527 INFO: Synchronization 1 successful.
+2024-03-04 16:04:04,531 INFO: Synchronization 2 successful.
+2024-03-04 16:04:14,535 INFO: File test1.txt copied from source to replica.
+2024-03-04 16:04:14,536 INFO: File test2.txt copied from source to replica.
+2024-03-04 16:04:14,538 INFO: File test3.txt copied from source to replica.
+2024-03-04 16:04:14,540 INFO: DIR test4 copied from source to replica.
+2024-03-04 16:04:14,540 INFO: Synchronization 3 successful.
+2024-03-04 16:04:24,556 INFO: File test4.txt removed from replica.
+2024-03-04 16:04:24,558 INFO: File test4.txt copied from source to replica.
+2024-03-04 16:04:24,565 INFO: Synchronization 4 successful.
+2024-03-04 16:04:34,567 INFO: File test2.txt copied from source to replica.
+2024-03-04 16:04:34,571 INFO: Synchronization 5 successful.
+2024-03-04 16:04:44,575 INFO: Synchronization 6 successful.
+2024-03-04 16:04:54,579 INFO: Synchronization 7 successful.
+2024-03-04 16:05:04,582 INFO: Synchronization 8 successful.
+2024-03-04 16:05:14,586 INFO: File test2.txt removed from replica.
+2024-03-04 16:05:14,587 INFO: Synchronization 9 successful.
+2024-03-04 16:05:24,590 INFO: Synchronization 10 successful.
+2024-03-04 16:05:34,595 INFO: File test2.txt copied from source to replica.
+2024-03-04 16:05:34,597 INFO: Synchronization 11 successful.
