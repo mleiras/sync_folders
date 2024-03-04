@@ -9,7 +9,7 @@ import hashlib
 import argparse
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.ArgumentParser:
     """
     Parse command line arguments for the folder synchronization program.
 
