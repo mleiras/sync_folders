@@ -71,6 +71,20 @@ def compare_folders(source: str, replica: str):
     # print(os.listdir(source))
     # print(os.listdir(replica))
 
+    def comparing_files(file1_path: str, file2_path: str):
+        if file2_path == file1_path:
+            if compare_files(file1_path, file2_path):
+                print("3 - True - same file. Operations not needed.")
+                return True
+            else:
+                # remove file_replica
+                os.remove(file2_path)
+                logging.info("File %s removed from replica.", file2_path)
+                # copy file to replica dir
+                shutil.copy2(file1_path, file2_path) #### ERRO !
+                logging.info("File %s copied from source to replica.", file1_path)
+                return False
+
     for file_replica in os.listdir(replica):
         if file_replica not in os.listdir(source):
             # remove file_replica
@@ -81,11 +95,21 @@ def compare_folders(source: str, replica: str):
             logging.info("File %s removed from replica.", file_replica)
 
     for file in os.listdir(source):
-        if file not in os.listdir(replica):
-            # copy file to replica dir
-            print(
-                f"1 - File {file} not in replica - copying now. - ADD TO LOG"
-            )  # file not in replica, copy from source to replica
+        print(file, os.path.isdir(source+'/'+file))
+        # print(os.path.isfile(source+'/'+file))
+        if os.path.isdir(source+'/'+file): # if 'file' is a directory instead of file
+            if file not in os.listdir(replica):
+                # copy dir to replica
+                shutil.copytree(source + "/" + file, replica + "/" + file) #copy dir with all contents to replica
+                logging.info("DIR %s copied from source to replica.", file)
+            else:
+                print('TESTE')
+                for dir_file in os.listdir(source+'/'+file):
+                    comparing_files(source + "/" + file+'/'+dir_file, replica + "/" + file + '/' + dir_file) ####################
+
+
+        elif file not in os.listdir(replica):
+           # file not in replica, copy from source to replica
             shutil.copy2(source + "/" + file, replica)  # copy2 preserves metadata
             logging.info("File %s copied from source to replica.", file)
 
@@ -93,13 +117,9 @@ def compare_folders(source: str, replica: str):
             for file_replica in os.listdir(replica):
                 if file_replica == file:
                     if compare_files(source + "/" + file, replica + "/" + file_replica):
-                        print("3 - True - same file. Operations not needed.")
+                        # print("3 - True - same file. Operations not needed.")
+                        continue
                     else:
-                        print(
-                            "4 - False - different contents between %s and %s. Removing file from replica and copying now the new one. - ADD TO LOG",
-                            file,
-                            file_replica,
-                        )
                         # remove file_replica
                         os.remove(replica + "/" + file_replica)
                         logging.info("File %s removed from replica.", file_replica)
@@ -143,7 +163,8 @@ def synchronize_folders(source: str, replica: str, interval: int, log_file: str)
         compare_folders(source, replica)
         logging.info("Synchronization %s successful.", n)
         # periodically synchronize folders
-        time.sleep(interval)
+        # time.sleep(interval)
+        break
 
 
 if __name__ == "__main__":
