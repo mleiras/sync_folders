@@ -2,15 +2,15 @@
 
 
 ## Description: 
-'sync_folders' is a simple Python program designed to synchronize the contents of two folders periodically in a one-way manner. 
+'sync_folders' is a simple Python program designed to unidirectionally and periodically synchronize the contents of two folders. 
 
 It recursively compares the files and subfolders in the source folder with those in the replica folder and replicates any changes found, while also maintaining a log file of synchronization operations.
 
 ## Features:
 
-- Synchronize the contents of two folders in a one-way manner.
-- Periodically check for changes and replicate them to the replica folder.
-- File operations is logged to a file and to the console output.
+- Unidirectionally synchronize the contents of two folders.
+- Periodically check for changes in the source folder and replicate them to the replica folder.
+- Log file operations to a file and to the console output.
 - Support for recursive synchronization of subfolders.
 - Customizable synchronization interval and log file path via command line arguments.
 
@@ -41,14 +41,13 @@ Example:
 Python 3.x
 
 ## Libraries used:
-os
-shutil
-time
-logging
-hashlib
-argparse
+- os
+- shutil
+- time
+- logging
+- hashlib
+- argparse
 
 ## License:
 
 This project is licensed under the MIT License. See the [LICENSE](https://raw.githubusercontent.com/mleiras/sync_folders/main/LICENSE.txt) file for details.
-
